@@ -1,0 +1,3 @@
+- src: git+https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab-ci-token:@gitlab.com/devops8310611/ansible-roles/ansible-role-docker.git
+  version: main
+  name: docker
