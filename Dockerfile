@@ -1,17 +1,19 @@
-FROM docker.io/alpine:3.17.2
+FROM python:3-alpine
 
 ENV ANSIBLE_FORCE_COLOR="true"
 ENV ANSIBLE_HOST_KEY_CHECKING="false"
 ENV ANSIBLE_CONFIG="/ansible.cfg"
 
-COPY ansible.cfg entrypoint.sh /
-
-RUN apk add --no-cache \
+RUN apk add --update --no-cache \
+	py-pip \
 	openssh-client \
 	git \
-	ansible
+	rsync \
+        libffi-dev \
+        musl-dev
 
-RUN apk add --no-cache --virtual .build-deps \
+RUN apk add --update --no-cache \
+    --virtual .build-deps \
     make \
     gcc && \
     pip install --no-cache-dir ansible && \
@@ -19,5 +21,7 @@ RUN apk add --no-cache --virtual .build-deps \
 
 RUN mkdir ~/.ssh && \
     ssh-keyscan -t rsa gitlab.com >> ~/.ssh/known_hosts
+
+COPY ansible.cfg entrypoint.sh /
 
 ENTRYPOINT ["/bin/ash", "/entrypoint.sh"]
